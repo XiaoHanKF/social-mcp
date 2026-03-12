@@ -1,0 +1,26 @@
+services:
+  xiaohongshu-mcp:
+    build: .
+    image: xiaohongshu-mcp:local
+    container_name: xiaohongshu-mcp
+    restart: unless-stopped
+    init: true
+    tty: true
+    volumes:
+      - ./data:/app/data
+      - ./images:/app/images
+    environment:
+      - ROD_BROWSER_BIN=/usr/bin/google-chrome
+      - DATA_ROOT=/app/data
+      - HTTP_PROXY=
+      - HTTPS_PROXY=
+      - http_proxy=
+      - https_proxy=
+      - NO_PROXY=*
+      - no_proxy=*
+      - XHS_PROXY=direct://
+    dns:
+      - 223.5.5.5
+      - 114.114.114.114
+    ports:
+      - "18060:18060"
