@@ -1,14 +1,12 @@
 services:
   xiaohongshu-mcp:
-    build: .
-    image: xiaohongshu-mcp:local
+    image: xpzouying/xiaohongshu-mcp:latest
     container_name: xiaohongshu-mcp
     restart: unless-stopped
     init: true
     tty: true
     volumes:
-      - ./data:/app/data
-      - ./images:/app/images
+      - xiaohongshu-data:/app/data
     environment:
       - ROD_BROWSER_BIN=/usr/bin/google-chrome
       - DATA_ROOT=/app/data
@@ -24,3 +22,7 @@ services:
       - 114.114.114.114
     ports:
       - "18060:18060"
+
+volumes:
+  xiaohongshu-data:
+    driver: local
