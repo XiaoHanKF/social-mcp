@@ -14,7 +14,7 @@ import (
 func boolPtr(b bool) *bool { return &b }
 
 // validateTenant 校验租户参数，返回错误结果或 nil
-func validateTenant(tc TenantContext) *mcp.CallToolResult {
+func validateTenant(tc *TenantContext) *mcp.CallToolResult {
 	if err := tc.Validate(); err != nil {
 		return &mcp.CallToolResult{
 			Content: []mcp.Content{&mcp.TextContent{Text: "参数错误: " + err.Error()}},
@@ -188,7 +188,7 @@ func registerTools(server *mcp.Server, appServer *AppServer) {
 			},
 		},
 		withPanicRecovery("check_login_status", func(ctx context.Context, req *mcp.CallToolRequest, args TenantContext) (*mcp.CallToolResult, any, error) {
-			if errResult := validateTenant(args); errResult != nil {
+			if errResult := validateTenant(&args); errResult != nil {
 				return errResult, nil, nil
 			}
 			result := appServer.handleCheckLoginStatus(ctx, args)
@@ -207,7 +207,7 @@ func registerTools(server *mcp.Server, appServer *AppServer) {
 			},
 		},
 		withPanicRecovery("get_login_qrcode", func(ctx context.Context, req *mcp.CallToolRequest, args TenantContext) (*mcp.CallToolResult, any, error) {
-			if errResult := validateTenant(args); errResult != nil {
+			if errResult := validateTenant(&args); errResult != nil {
 				return errResult, nil, nil
 			}
 			result := appServer.handleGetLoginQrcode(ctx, args)
@@ -226,7 +226,7 @@ func registerTools(server *mcp.Server, appServer *AppServer) {
 			},
 		},
 		withPanicRecovery("delete_cookies", func(ctx context.Context, req *mcp.CallToolRequest, args TenantContext) (*mcp.CallToolResult, any, error) {
-			if errResult := validateTenant(args); errResult != nil {
+			if errResult := validateTenant(&args); errResult != nil {
 				return errResult, nil, nil
 			}
 			result := appServer.handleDeleteCookies(ctx, args)
@@ -245,7 +245,7 @@ func registerTools(server *mcp.Server, appServer *AppServer) {
 			},
 		},
 		withPanicRecovery("publish_content", func(ctx context.Context, req *mcp.CallToolRequest, args PublishContentArgs) (*mcp.CallToolResult, any, error) {
-			if errResult := validateTenant(args.TenantContext); errResult != nil {
+			if errResult := validateTenant(&args.TenantContext); errResult != nil {
 				return errResult, nil, nil
 			}
 			result := appServer.handlePublishContent(ctx, args)
@@ -264,7 +264,7 @@ func registerTools(server *mcp.Server, appServer *AppServer) {
 			},
 		},
 		withPanicRecovery("list_feeds", func(ctx context.Context, req *mcp.CallToolRequest, args TenantContext) (*mcp.CallToolResult, any, error) {
-			if errResult := validateTenant(args); errResult != nil {
+			if errResult := validateTenant(&args); errResult != nil {
 				return errResult, nil, nil
 			}
 			result := appServer.handleListFeeds(ctx, args)
@@ -283,7 +283,7 @@ func registerTools(server *mcp.Server, appServer *AppServer) {
 			},
 		},
 		withPanicRecovery("search_feeds", func(ctx context.Context, req *mcp.CallToolRequest, args SearchFeedsArgs) (*mcp.CallToolResult, any, error) {
-			if errResult := validateTenant(args.TenantContext); errResult != nil {
+			if errResult := validateTenant(&args.TenantContext); errResult != nil {
 				return errResult, nil, nil
 			}
 			result := appServer.handleSearchFeeds(ctx, args)
@@ -302,7 +302,7 @@ func registerTools(server *mcp.Server, appServer *AppServer) {
 			},
 		},
 		withPanicRecovery("get_feed_detail", func(ctx context.Context, req *mcp.CallToolRequest, args FeedDetailArgs) (*mcp.CallToolResult, any, error) {
-			if errResult := validateTenant(args.TenantContext); errResult != nil {
+			if errResult := validateTenant(&args.TenantContext); errResult != nil {
 				return errResult, nil, nil
 			}
 			result := appServer.handleGetFeedDetail(ctx, args)
@@ -321,7 +321,7 @@ func registerTools(server *mcp.Server, appServer *AppServer) {
 			},
 		},
 		withPanicRecovery("user_profile", func(ctx context.Context, req *mcp.CallToolRequest, args UserProfileArgs) (*mcp.CallToolResult, any, error) {
-			if errResult := validateTenant(args.TenantContext); errResult != nil {
+			if errResult := validateTenant(&args.TenantContext); errResult != nil {
 				return errResult, nil, nil
 			}
 			result := appServer.handleUserProfile(ctx, args)
@@ -340,7 +340,7 @@ func registerTools(server *mcp.Server, appServer *AppServer) {
 			},
 		},
 		withPanicRecovery("post_comment_to_feed", func(ctx context.Context, req *mcp.CallToolRequest, args PostCommentArgs) (*mcp.CallToolResult, any, error) {
-			if errResult := validateTenant(args.TenantContext); errResult != nil {
+			if errResult := validateTenant(&args.TenantContext); errResult != nil {
 				return errResult, nil, nil
 			}
 			result := appServer.handlePostComment(ctx, args)
@@ -359,7 +359,7 @@ func registerTools(server *mcp.Server, appServer *AppServer) {
 			},
 		},
 		withPanicRecovery("reply_comment_in_feed", func(ctx context.Context, req *mcp.CallToolRequest, args ReplyCommentArgs) (*mcp.CallToolResult, any, error) {
-			if errResult := validateTenant(args.TenantContext); errResult != nil {
+			if errResult := validateTenant(&args.TenantContext); errResult != nil {
 				return errResult, nil, nil
 			}
 			if args.CommentID == "" && args.UserID == "" {
@@ -384,7 +384,7 @@ func registerTools(server *mcp.Server, appServer *AppServer) {
 			},
 		},
 		withPanicRecovery("publish_with_video", func(ctx context.Context, req *mcp.CallToolRequest, args PublishVideoArgs) (*mcp.CallToolResult, any, error) {
-			if errResult := validateTenant(args.TenantContext); errResult != nil {
+			if errResult := validateTenant(&args.TenantContext); errResult != nil {
 				return errResult, nil, nil
 			}
 			result := appServer.handlePublishVideo(ctx, args)
@@ -403,7 +403,7 @@ func registerTools(server *mcp.Server, appServer *AppServer) {
 			},
 		},
 		withPanicRecovery("like_feed", func(ctx context.Context, req *mcp.CallToolRequest, args LikeFeedArgs) (*mcp.CallToolResult, any, error) {
-			if errResult := validateTenant(args.TenantContext); errResult != nil {
+			if errResult := validateTenant(&args.TenantContext); errResult != nil {
 				return errResult, nil, nil
 			}
 			result := appServer.handleLikeFeed(ctx, args)
@@ -422,7 +422,7 @@ func registerTools(server *mcp.Server, appServer *AppServer) {
 			},
 		},
 		withPanicRecovery("favorite_feed", func(ctx context.Context, req *mcp.CallToolRequest, args FavoriteFeedArgs) (*mcp.CallToolResult, any, error) {
-			if errResult := validateTenant(args.TenantContext); errResult != nil {
+			if errResult := validateTenant(&args.TenantContext); errResult != nil {
 				return errResult, nil, nil
 			}
 			result := appServer.handleFavoriteFeed(ctx, args)
@@ -441,7 +441,7 @@ func registerTools(server *mcp.Server, appServer *AppServer) {
 			},
 		},
 		withPanicRecovery("get_hot_searches", func(ctx context.Context, req *mcp.CallToolRequest, args TenantContext) (*mcp.CallToolResult, any, error) {
-			if errResult := validateTenant(args); errResult != nil {
+			if errResult := validateTenant(&args); errResult != nil {
 				return errResult, nil, nil
 			}
 			result := appServer.handleGetHotSearches(ctx, args)
@@ -460,7 +460,7 @@ func registerTools(server *mcp.Server, appServer *AppServer) {
 			},
 		},
 		withPanicRecovery("get_trending_topics", func(ctx context.Context, req *mcp.CallToolRequest, args TrendingTopicsArgs) (*mcp.CallToolResult, any, error) {
-			if errResult := validateTenant(args.TenantContext); errResult != nil {
+			if errResult := validateTenant(&args.TenantContext); errResult != nil {
 				return errResult, nil, nil
 			}
 			result := appServer.handleGetTrendingTopics(ctx, args.TenantContext, args.Category)

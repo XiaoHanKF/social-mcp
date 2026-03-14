@@ -233,10 +233,16 @@ func (s *XiaohongshuService) GetLoginQrcode(ctx context.Context, tc TenantContex
 			defer cancel()
 			defer deferFunc()
 
+			logrus.Infof("等待用户扫码登录 [tenant=%s, app=%s]", tc.TenantID, tc.AppID)
 			if loginAction.WaitForLogin(ctxTimeout) {
+				logrus.Infof("用户登录成功，正在保存 cookies [tenant=%s, app=%s]", tc.TenantID, tc.AppID)
 				if er := saveCookiesForTenant(page, tc); er != nil {
-					logrus.Errorf("failed to save cookies: %v", er)
+					logrus.Errorf("保存 cookies 失败 [tenant=%s, app=%s]: %v", tc.TenantID, tc.AppID, er)
+				} else {
+					logrus.Infof("✓ Cookies 已保存到 %s", tc.CookiesFilePath())
 				}
+			} else {
+				logrus.Warnf("用户未在规定时间内登录 [tenant=%s, app=%s]", tc.TenantID, tc.AppID)
 			}
 		}()
 	}

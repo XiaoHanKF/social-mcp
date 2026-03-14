@@ -10,16 +10,17 @@ import (
 // TenantContext 租户上下文，用于多租户隔离
 type TenantContext struct {
 	TenantID string `json:"tenant_id" jsonschema:"required,租户ID"`
-	AppID    string `json:"app_id" jsonschema:"required,应用ID"`
+	AppID    string `json:"app_id,omitempty" jsonschema:"应用ID（可选，默认为default）"`
 }
 
 // Validate 校验租户参数非空且无路径穿越
-func (tc TenantContext) Validate() error {
+func (tc *TenantContext) Validate() error {
 	if tc.TenantID == "" {
 		return fmt.Errorf("tenant_id 不能为空")
 	}
+	// app_id 可选，如果为空则使用默认值
 	if tc.AppID == "" {
-		return fmt.Errorf("app_id 不能为空")
+		tc.AppID = "default"
 	}
 	if containsPathTraversal(tc.TenantID) {
 		return fmt.Errorf("tenant_id 包含非法字符")
